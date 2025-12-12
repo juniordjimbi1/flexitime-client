@@ -1,0 +1,123 @@
+:root{
+  --ft-primary:#0d6efd;
+  --ft-primary-600:#2563eb;
+  --ft-bg:#f7f8fb;
+}
+body { background: var(--ft-bg); }
+.card { border: 0; border-radius: 1rem; position: relative; }
+.card .card-title { font-weight: 700; }
+.badge { border-radius: 999px; }
+.navbar { border-bottom: 1px solid rgba(0,0,0,.05); }
+.table>thead th { font-size:.85rem; letter-spacing:.02em; text-transform:uppercase; }
+.btn-primary { background: var(--ft-primary-600); border-color: var(--ft-primary-600); }
+.btn-primary:hover { filter: brightness(0.95); }
+.form-control, .form-select { border-radius: .75rem; }
+
+/* Validation visuelle */
+.is-invalid { border-color: #dc3545 !important; }
+.is-invalid:focus { box-shadow: 0 0 0 .2rem rgba(220,53,69,.15); }
+.invalid-feedback { display:block; }
+
+/* client/src/styles/theme.css */
+
+/* ===== Base (clair) ===== */
+:root {
+  color-scheme: light;
+}
+
+/* ===== Mode sombre ===== */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+:root[data-theme="dark"] body {
+  background-color: #0f1115;
+  color: #e9ecef;
+}
+
+/* Cartes, menus, offcanvas */
+:root[data-theme="dark"] .card {
+  background-color: #161a21;
+  border-color: #222736;
+  color: #e9ecef;
+}
+:root[data-theme="dark"] .dropdown-menu,
+:root[data-theme="dark"] .offcanvas,
+:root[data-theme="dark"] .modal-content {
+  background-color: #161a21;
+  color: #e9ecef;
+  border-color: #222736;
+}
+:root[data-theme="dark"] .list-group-item {
+  background-color: #11151b;
+  color: #e9ecef;
+  border-color: #222736;
+}
+:root[data-theme="dark"] .form-control,
+:root[data-theme="dark"] .form-select,
+:root[data-theme="dark"] .input-group-text {
+  background-color: #0f1319;
+  color: #e9ecef;
+  border-color: #2a3142;
+}
+:root[data-theme="dark"] .btn-light {
+  background-color: #2a3142;
+  color: #e9ecef;
+  border-color: #39425a;
+}
+:root[data-theme="dark"] .btn-outline-light {
+  color: #e9ecef;
+  border-color: #6c757d;
+}
+:root[data-theme="dark"] .table {
+  --bs-table-bg: transparent;
+  --bs-table-striped-bg: rgba(255,255,255,.02);
+  --bs-table-hover-bg: rgba(255,255,255,.04);
+  color: #e9ecef;
+}
+
+/* Navbar : on garde bg-primary ; on adoucit menus ouverts en sombre */
+:root[data-theme="dark"] .navbar .dropdown-menu {
+  background-color: #161a21;
+}
+
+/* Badges */
+:root[data-theme="dark"] .badge.text-bg-secondary {
+  background-color: #3a4155 !important;
+}
+
+/* Focus visible (a11y) */
+:root :focus-visible {
+  outline: 3px solid #ffc107;
+  outline-offset: 2px;
+}
+
+/* États UX (loading/empty/error) */
+.state-box {
+  border: 1px dashed rgba(108,117,125,.45);
+  border-radius: .5rem;
+  padding: 1rem;
+  text-align: center;
+}
+:root[data-theme="dark"] .state-box {
+  border-color: rgba(233,236,239,.25);
+  color: #cfd5db;
+}
+
+/* Progress badge dans onglets/checklist */
+.small-muted {
+  font-size: .875rem;
+  color: #6c757d;
+}
+:root[data-theme="dark"] .small-muted {
+  color: #a3aab3;
+}
+
+
+/* Actions responsive : boutons visibles dès md, sinon regroupés */
+@media (max-width: 767.98px) {
+  .actions-inline { display: none !important; }
+}
+@media (min-width: 768px) {
+  .actions-dropdown { display: none !important; }
+}
