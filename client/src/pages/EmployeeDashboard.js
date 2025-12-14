@@ -132,17 +132,33 @@ export default function EmployeeDashboard() {
   }
 
   async function stopSession() {
-    setWorking(true);
-    try {
-      await api.post('/sessions/stop', {});
-      await Promise.all([loadOpen(), loadSessions(), loadAvailability(), loadPreview(), loadTodayStatus()]);
-      toast.success('Session arrêtée');
-    } catch (err) {
-      toast.error(err?.response?.data?.message || 'Erreur');
-    } finally {
-      setWorking(false);
+  setWorking(true);
+  try {
+    const sid = openSession?.id;
+
+    if (!sid) {
+      toast.error("Aucune session en cours");
+      return;
     }
+
+    await api.post('/sessions/stop', { session_id: sid });
+
+    await Promise.all([
+      loadOpen(),
+      loadSessions(),
+      loadAvailability(),
+      loadPreview(),
+      loadTodayStatus()
+    ]);
+
+    toast.success('Session arrêtée');
+  } catch (err) {
+    toast.error(err?.response?.data?.message || 'Erreur');
+  } finally {
+    setWorking(false);
   }
+}
+
 
   async function closeDay() {
     setWorking(true);
