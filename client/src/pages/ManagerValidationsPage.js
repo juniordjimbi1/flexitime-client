@@ -78,7 +78,7 @@ export default function ManagerValidationsPage() {
           {loading ? (
             <div className="text-center py-5"><Spinner /></div>
           ) : (
-            <div className="table-responsive">
+            <div className="ft-table-desktop table-responsive">
               <table className="table table-sm align-middle">
                 <thead>
                   <tr>
@@ -164,6 +164,59 @@ export default function ManagerValidationsPage() {
                   {!list.length && <tr><td colSpan="8"><EmptyState title="Aucune validation en attente" /></td></tr>}
                 </tbody>
               </table>
+              <div className="ft-cards-mobile">
+  {!list.length ? (
+    <EmptyState title="Aucune validation en attente" />
+  ) : list.map(v => {
+    const isOpen = openRow === v.id;
+    const fileCount = Number(v.file_count || 0);
+
+    return (
+      <div key={v.id} className="ft-card-item mb-2">
+        <div className="d-flex justify-content-between align-items-start gap-2">
+          <div>
+            <div className="fw-semibold">{v.last_name} {v.first_name}</div>
+            <div className="text-muted small">{v.email}</div>
+          </div>
+          <button className="btn btn-light btn-sm" onClick={()=>toggleFiles(v)}>
+            {isOpen ? '▲' : '▼'}
+          </button>
+        </div>
+
+        <div className="ft-kv"><span className="k">Date</span><span className="v">{v.close_date}</span></div>
+        <div className="ft-kv"><span className="k">Temps</span><span className="v">{v.total_minutes} min</span></div>
+        <div className="ft-kv"><span className="k">DONE</span><span className="v">{v.tasks_done}</span></div>
+        <div className="ft-kv"><span className="k">Pièces</span><span className="v">{fileCount ? `${fileCount}` : '—'}</span></div>
+
+        <div className="mt-2">
+          <input
+            className="form-control form-control-sm"
+            value={decision[v.id] || ''}
+            onChange={e=>setDecision(prev => ({...prev, [v.id]: e.target.value}))}
+            placeholder="Commentaire (optionnel du manager)"
+          />
+        </div>
+
+        <div className="ft-actions-mobile mt-2">
+          <button className="btn btn-success btn-sm" onClick={()=>decide(v.id,'APPROVED')}>Valider</button>
+          <button className="btn btn-outline-danger btn-sm mt-2" onClick={()=>decide(v.id,'REJECTED')}>Rejeter</button>
+        </div>
+
+        {isOpen && (
+          <div className="mt-3 p-2 border rounded bg-light">
+            <div className="fw-semibold mb-2">Détails & pièces</div>
+            <div className="small text-muted mb-2">Résumé employé</div>
+            <div className="p-2 bg-white border rounded mb-2">
+              {v.employee_comment ? v.employee_comment : <span className="text-muted">—</span>}
+            </div>
+            <PaginatedFilesList type="day" closeId={v.day_close_id} defaultLimit={10} />
+          </div>
+        )}
+      </div>
+    );
+  })}
+</div>
+
             </div>
           )}
         </div>

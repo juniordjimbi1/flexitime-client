@@ -68,7 +68,7 @@ export default function AdminTeamValidationsPage() {
           ) : !list.length ? (
             <EmptyState title="Aucune clôture d’équipe en attente" />
           ) : (
-            <div className="table-responsive">
+            <div className="ft-table-desktop table-responsive">
               <table className="table table-sm align-middle">
                 <thead>
                   <tr>
@@ -152,7 +152,77 @@ export default function AdminTeamValidationsPage() {
                   })}
                 </tbody>
               </table>
+              <div className="ft-cards-mobile">
+  {!list.length ? (
+    <EmptyState title="Aucune clôture d’équipe en attente" />
+  ) : list.map(v => {
+    const isOpen = openRow === v.id;
+    const fileCount = Number(v.file_count || 0);
+    const files = filesByClose[v.team_close_id] || [];
+
+    return (
+      <div key={v.id} className="ft-card-item mb-2">
+        <div className="d-flex justify-content-between align-items-start gap-2">
+          <div>
+            <div className="fw-semibold">{v.team_name}</div>
+            <div className="text-muted small">Mgr: {v.mgr_last} {v.mgr_first}</div>
+            <div className="text-muted small">{v.mgr_email}</div>
+          </div>
+          <button className="btn btn-light btn-sm" onClick={()=>toggleRow(v)}>
+            {isOpen ? '▲' : '▼'}
+          </button>
+        </div>
+
+        <div className="ft-kv"><span className="k">Date</span><span className="v">{v.close_date}</span></div>
+        <div className="ft-kv"><span className="k">Membres</span><span className="v">{v.members_submitted} / {v.members_total}</span></div>
+        <div className="ft-kv"><span className="k">Temps total</span><span className="v">{v.total_minutes} min</span></div>
+        <div className="ft-kv"><span className="k">DONE</span><span className="v">{v.tasks_done_total}</span></div>
+        <div className="ft-kv"><span className="k">Pièces</span><span className="v">{fileCount ? `${fileCount}` : '—'}</span></div>
+
+        <div className="mt-2">
+          <input
+            className="form-control form-control-sm"
+            placeholder="Commentaire (optionnel)"
+            value={comment[v.id] || ''}
+            onChange={e=>setComment(prev=>({ ...prev, [v.id]: e.target.value }))}
+          />
+        </div>
+
+        <div className="ft-actions-mobile mt-2">
+          <button className="btn btn-success btn-sm" onClick={()=>decide(v.id,'APPROVED')}>Valider</button>
+          <button className="btn btn-outline-danger btn-sm mt-2" onClick={()=>decide(v.id,'REJECTED')}>Rejeter</button>
+        </div>
+
+        {isOpen && (
+          <div className="mt-3 p-2 border rounded bg-light">
+            <div className="mb-2">
+              <span className="text-muted small">Résumé du manager :</span>{' '}
+              <span className="fw-semibold">{v.manager_comment || '—'}</span>
             </div>
+
+            <div className="fw-semibold mb-2">Pièces jointes</div>
+            {files.length ? (
+              <ul className="mb-0">
+                {files.map(f => (
+                  <li key={f.id}>
+                    <a href={`${API_ORIGIN}/api/team-close/files/${f.filename}`} target="_blank" rel="noopener noreferrer">
+                      {f.original_name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="text-muted">Aucun fichier</div>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  })}
+</div>
+
+            </div>
+            
           )}
         </div>
       </div>

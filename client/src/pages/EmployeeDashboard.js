@@ -221,15 +221,19 @@ export default function EmployeeDashboard() {
 
               {/* Start / Stop */}
               {openSession ? (
-                <div className="d-flex align-items-center gap-2 mb-3">
-                  <span className="badge bg-success">En cours</span>
-                  <span className="text-muted">
-                    démarrée à <strong>{new Date(openSession.start_time.replace(' ', 'T')).toLocaleTimeString()}</strong>
-                  </span>
-                  <button className="btn btn-danger btn-sm ms-auto" disabled={working} onClick={stopSession}>
-                    {working ? 'Arrêt…' : 'Arrêter la session'}
-                  </button>
-                </div>
+                <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2 mb-3">
+  <span className="badge bg-success">En cours</span>
+  <span className="text-muted">
+    démarrée à <strong>{new Date(openSession.start_time.replace(' ', 'T')).toLocaleTimeString()}</strong>
+  </span>
+  <button
+    className="btn btn-danger btn-sm w-100 w-sm-auto ms-sm-auto"
+    disabled={working}
+    onClick={stopSession}
+  >
+    {working ? 'Arrêt…' : 'Arrêter la session'}
+  </button>
+</div>
               ) : (
                 <form className="row g-2 align-items-end mb-3" onSubmit={startSession}>
                   <div className="col-md-9">
@@ -274,7 +278,7 @@ export default function EmployeeDashboard() {
               )}
 
               {/* Liste des sessions du jour */}
-              <div className="table-responsive">
+              <div className="ft-table-desktop table-responsive">
                 <table className="table table-sm align-middle">
                   <thead>
                     <tr>
@@ -301,6 +305,36 @@ export default function EmployeeDashboard() {
                   </tfoot>
                 </table>
               </div>
+              <div className="ft-cards-mobile">
+  {!sessions.length ? (
+    <div className="state-box"><EmptyState title="Aucune session aujourd’hui" /></div>
+  ) : (
+    <>
+      {sessions.map(s => (
+        <div key={s.id} className="ft-card-item mb-2">
+          <div className="d-flex justify-content-between align-items-start gap-2">
+            <div className="fw-semibold">
+              {new Date(s.start_time.replace(' ', 'T')).toLocaleTimeString()}
+              {' '}→{' '}
+              {s.end_time ? new Date(s.end_time.replace(' ', 'T')).toLocaleTimeString() : 'en cours'}
+            </div>
+            <span className="badge bg-light text-dark">{s.duration_minutes != null ? fmtMins(s.duration_minutes) : '—'}</span>
+          </div>
+
+          <div className="ft-kv"><span className="k">Tâche</span><span className="v">{s.task_id || '—'}</span></div>
+        </div>
+      ))}
+
+      <div className="ft-card-item">
+        <div className="d-flex justify-content-between align-items-center">
+          <span className="text-muted">Total</span>
+          <span className="fw-semibold">{fmtMins(sumMinutes)}</span>
+        </div>
+      </div>
+    </>
+  )}
+</div>
+
             </div>
           </div>
 
@@ -312,7 +346,7 @@ export default function EmployeeDashboard() {
               {!openSession ? (
                 <div className="text-muted">Démarre une session pour afficher tes tâches du jour.</div>
               ) : (
-                <div className="table-responsive">
+               <div className="ft-table-desktop table-responsive">
                   <table className="table table-sm align-middle">
                     <thead>
                       <tr>
@@ -347,6 +381,43 @@ export default function EmployeeDashboard() {
                 </div>
               )}
             </div>
+            <div className="ft-cards-mobile">
+  {!tasksToday.length ? (
+    <div className="state-box"><EmptyState title="Aucune tâche du jour" /></div>
+  ) : tasksToday.map(t => (
+    <div key={t.id} className="ft-card-item mb-2">
+      <div className="d-flex justify-content-between align-items-start gap-2">
+        <div className="fw-semibold">{t.title}</div>
+        <Badge status={t.status} />
+      </div>
+
+      <div className="text-muted small mt-1">{t.description || '—'}</div>
+
+      <div className="ft-kv">
+        <span className="k">Équipe</span>
+        <span className="v">{t.department_name} / {t.subdep_name} / {t.team_name || '—'}</span>
+      </div>
+      <div className="ft-kv"><span className="k">Échéance</span><span className="v">{t.due_date || '—'}</span></div>
+      <div className="ft-kv"><span className="k">Temps aujourd’hui</span><span className="v">{fmtMins(t.minutes_spent_today)}</span></div>
+
+      <div className="dropdown mt-2">
+        <button
+          className="btn btn-outline-secondary btn-sm w-100 dropdown-toggle"
+          data-bs-toggle="dropdown"
+          disabled={working}
+        >
+          Changer statut
+        </button>
+        <ul className="dropdown-menu w-100">
+          <li><button className="dropdown-item" disabled={working} onClick={()=>move(t.id,'TODO')}>TODO</button></li>
+          <li><button className="dropdown-item" disabled={working} onClick={()=>move(t.id,'IN_PROGRESS')}>IN PROGRESS</button></li>
+          <li><button className="dropdown-item" disabled={working} onClick={()=>move(t.id,'DONE')}>DONE</button></li>
+        </ul>
+      </div>
+    </div>
+  ))}
+</div>
+
           </div>
 
           {/* --- Clôture de journée --- */}
@@ -357,25 +428,29 @@ export default function EmployeeDashboard() {
               {preview && (
                 <>
                   <div className="row g-3">
-                    <div className="col-md-3">
+                    <div className="col-6 col-md-3">
+
                       <div className="p-3 border rounded bg-light">
                         <div className="text-muted small">Date</div>
                         <div className="fw-semibold">{preview.date}</div>
                       </div>
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-6 col-md-3">
+
                       <div className="p-3 border rounded bg-light">
                         <div className="text-muted small">Temps total</div>
                         <div className="fw-semibold">{fmtMins(preview.total_minutes)}</div>
                       </div>
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-6 col-md-3">
+
                       <div className="p-3 border rounded bg-light">
                         <div className="text-muted small">Tâches terminées</div>
                         <div className="fw-semibold">{preview.tasks_done}</div>
                       </div>
                     </div>
-                    <div className="col-md-3">
+                   <div className="col-6 col-md-3">
+
                       <div className="p-3 border rounded bg-light">
                         <div className="text-muted small">Statut</div>
                         <div className="fw-semibold">
@@ -396,7 +471,8 @@ export default function EmployeeDashboard() {
                         placeholder="Notes sur la journée…"
                       />
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-6 col-md-3">
+
                       <label className="form-label">Justificatif (PDF)</label>
                       <input
                         type="file"
@@ -405,7 +481,8 @@ export default function EmployeeDashboard() {
                         onChange={e=>setFile(e.target.files?.[0] || null)}
                       />
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-6 col-md-3">
+
                       <button
                         className="btn btn-success w-100"
                         onClick={closeDay}

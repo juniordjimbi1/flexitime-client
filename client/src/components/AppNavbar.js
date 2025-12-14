@@ -6,7 +6,7 @@ import Logo from '../assets/Logo';
 import ProjectFilterGlobal from './ProjectFilterGlobal';
 import '../styles/theme.css';
 import NotificationsBell from './NotificationsBell';
-import useDarkMode from '../hooks/useDarkMode';
+
 
 function initials(u) {
   const a = (u?.first_name || '').trim()[0] || '';
@@ -18,7 +18,7 @@ export default function AppNavbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const role = user?.role?.code;
-  const { isDark, toggle } = useDarkMode();
+ 
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
@@ -167,20 +167,6 @@ export default function AppNavbar() {
                     <div className="fw-semibold">{user.first_name} {user.last_name}</div>
                     <div className="small text-muted">{user.email}</div>
                     <div><span className="badge bg-light text-dark mt-1">{user.role.code}</span></div>
-                  </li>
-
-                  {/* Toggle Dark/Light */}
-                  <li><hr className="dropdown-divider" /></li>
-                  <li className="px-3 py-2 d-flex align-items-center justify-content-between">
-                    <span>Apparence</span>
-                    <button
-                      className="btn btn-sm btn-outline-secondary"
-                      onClick={toggle}
-                      aria-label="Basculer le thème clair/sombre"
-                      title="Basculer le thème clair/sombre"
-                    >
-                      {isDark ? '🌙 Sombre' : '☀️ Clair'}
-                    </button>
                   </li>
 
                   <li><hr className="dropdown-divider" /></li>

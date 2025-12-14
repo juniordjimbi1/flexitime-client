@@ -288,7 +288,7 @@ export default function AdminOrgPage() {
                     )}
                   </form>
 
-                  <div className="table-responsive mt-3">
+                 <div className="ft-table-desktop table-responsive mt-3">
                     <table className="table table-sm align-middle">
                       <thead>
                         <tr>
@@ -345,6 +345,37 @@ export default function AdminOrgPage() {
                       </tbody>
                     </table>
                   </div>
+                  <div className="ft-cards-mobile mt-3">
+  {!deps.length ? (
+    <div className="state-box">
+      <EmptyState title="Aucun département" />
+    </div>
+  ) : deps.map(d => (
+    <div key={d.id} className="ft-card-item mb-2">
+      <div className="d-flex justify-content-between align-items-start gap-2">
+        <div className="fw-semibold">{d.name}</div>
+
+        <div className="dropdown">
+          <button className="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+            <FiMoreVertical />
+          </button>
+          <ul className="dropdown-menu dropdown-menu-end">
+            <li>
+              <button className="dropdown-item" onClick={() => editDep(d)}>
+                Éditer
+              </button>
+            </li>
+            <li>
+              <button className="dropdown-item text-danger" onClick={() => askDelDep(d.id)}>
+                Supprimer
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  ))}
+</div>
                 </div>
               </div>
             </div>
@@ -409,7 +440,7 @@ export default function AdminOrgPage() {
                     )}
                   </form>
 
-                  <div className="table-responsive mt-3">
+                  <div className="ft-table-desktop table-responsive mt-3">
                     <table className="table table-sm align-middle">
                       <thead>
                         <tr>
@@ -468,6 +499,40 @@ export default function AdminOrgPage() {
                       </tbody>
                     </table>
                   </div>
+                  <div className="ft-cards-mobile mt-3">
+  {!subs.length ? (
+    <div className="state-box">
+      <EmptyState title="Aucun sous-département" />
+    </div>
+  ) : subs.map(s => (
+    <div key={s.id} className="ft-card-item mb-2">
+      <div className="d-flex justify-content-between align-items-start gap-2">
+        <div>
+          <div className="fw-semibold">{s.name}</div>
+          <div className="text-muted small">{s.department_name}</div>
+        </div>
+
+        <div className="dropdown">
+          <button className="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+            <FiMoreVertical />
+          </button>
+          <ul className="dropdown-menu dropdown-menu-end">
+            <li>
+              <button className="dropdown-item" onClick={() => editSub(s)}>
+                Éditer
+              </button>
+            </li>
+            <li>
+              <button className="dropdown-item text-danger" onClick={() => askDelSub(s.id)}>
+                Supprimer
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  ))}
+</div>
                 </div>
               </div>
 
@@ -496,35 +561,38 @@ export default function AdminOrgPage() {
 
                     <div className="col-md-8">
                       <label className="form-label">Ajouter des employés</label>
-                      <div className="d-flex gap-2">
-                        <select
-                          multiple
-                          className="form-select"
-                          value={toAdd}
-                          onChange={e => {
-                            const vals = [...e.target.selectedOptions].map(o => o.value);
-                            setToAdd(vals);
-                          }}
-                          disabled={!selectedTeamId}
-                        >
-                          {employees.map(e => (
-                            <option key={e.id} value={e.id}>
-                              {e.first_name} {e.last_name} — {e.email}
-                            </option>
-                          ))}
-                        </select>
-                        <button
-                          className="btn btn-primary"
-                          onClick={addMembers}
-                          disabled={!selectedTeamId || !toAdd.length}
-                        >
-                          Ajouter
-                        </button>
-                      </div>
+                      <div className="d-flex flex-column flex-sm-row gap-2">
+  <select
+    multiple
+    className="form-select"
+    value={toAdd}
+    onChange={e => {
+      const vals = [...e.target.selectedOptions].map(o => o.value);
+      setToAdd(vals);
+    }}
+    disabled={!selectedTeamId}
+    style={{ minHeight: 140 }}
+  >
+    {employees.map(e => (
+      <option key={e.id} value={e.id}>
+        {e.first_name} {e.last_name} — {e.email}
+      </option>
+    ))}
+  </select>
+
+  <button
+    className="btn btn-primary ft-btn-mobile-full"
+    onClick={addMembers}
+    disabled={!selectedTeamId || !toAdd.length}
+  >
+    Ajouter
+  </button>
+</div>
+
                     </div>
 
                     <div className="col-12">
-                      <div className="table-responsive">
+                      <div className="ft-table-desktop table-responsive">
                         <table className="table table-sm align-middle">
                           <thead>
                             <tr>
@@ -562,6 +630,29 @@ export default function AdminOrgPage() {
                           </tbody>
                         </table>
                       </div>
+                      <div className="ft-cards-mobile">
+  {!teamMembers.length ? (
+    <div className="state-box">
+      <EmptyState title="Aucun membre" />
+    </div>
+  ) : teamMembers.map(m => (
+    <div key={m.id} className="ft-card-item mb-2">
+      <div className="d-flex justify-content-between align-items-start gap-2">
+        <div>
+          <div className="fw-semibold">{m.first_name} {m.last_name}</div>
+          <div className="text-muted small">{m.email}</div>
+        </div>
+        <button
+          className="btn btn-outline-danger btn-sm"
+          onClick={() => askRemoveMember(m.id)}
+        >
+          <FiTrash2 /> Retirer
+        </button>
+      </div>
+    </div>
+  ))}
+</div>
+
                     </div>
                   </div>
                 </div>

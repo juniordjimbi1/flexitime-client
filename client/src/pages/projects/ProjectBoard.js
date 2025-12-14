@@ -216,9 +216,9 @@ const teamTasksByStatus = useMemo(() => {
     : '';
 
   return (
-    <div className="container-fluid py-3">
+    <div className="ft-page-centered">
       {/* Header */}
-      <div className="d-flex justify-content-between align-items-center mb-3">
+      <div className="d-flex flex-column flex-md-row gap-2 justify-content-between align-items-start align-items-md-center mb-3">
         <div>
           <h4 className="mb-1">
             {title}

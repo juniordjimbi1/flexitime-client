@@ -51,19 +51,24 @@ async function markReadFor(userId, ids) {
 async function listForUser(userId, { onlyUnread = false, limit = 20, offset = 0 } = {}) {
   const where = ['un.recipient_user_id = ?'];
   const params = [userId];
+
   if (onlyUnread) where.push('un.is_read = 0');
 
-  const rows = await db(
-    `SELECT n.id, n.type, n.title, n.body, n.link, n.creator_user_id, n.created_at,
-            un.is_read, un.read_at
-       FROM user_notifications un
-       JOIN notifications n ON n.id = un.notification_id
-      WHERE ${where.join(' AND ')}
-      ORDER BY n.created_at DESC
-      LIMIT ? OFFSET ?`,
-    [...params, Number(limit), Number(offset)]
-  );
-  return rows;
+  const lim = Math.min(Math.max(parseInt(limit ?? 20, 10), 1), 100);
+  const off = Math.max(parseInt(offset ?? 0, 10), 0);
+
+  const sql = `
+    SELECT n.id, n.type, n.title, n.body, n.link, n.creator_user_id, n.created_at,
+           un.is_read, un.read_at
+      FROM user_notifications un
+      JOIN notifications n ON n.id = un.notification_id
+     WHERE ${where.join(' AND ')}
+     ORDER BY n.created_at DESC
+     LIMIT ${lim} OFFSET ${off}
+  `;
+
+  return db(sql, params);
 }
+
 
 module.exports = { pushNotification, markReadFor, listForUser };

@@ -461,13 +461,10 @@ function TaskDrawer({ task, onClose, onUpdated }) {
 
   return (
     <div
-      className="offcanvas offcanvas-end show"
-      style={{
-        visibility: 'visible',
-        backgroundColor: '#1f2933',
-        color: 'white',
-      }}
-    >
+  className="offcanvas offcanvas-end show ft-offcanvas"
+  style={{ visibility: 'visible' }}
+>
+
       <div className="offcanvas-header border-bottom">
         <div>
           <h5 className="offcanvas-title mb-0">{local.title}</h5>
@@ -481,7 +478,7 @@ function TaskDrawer({ task, onClose, onUpdated }) {
       </div>
 
       <div className="offcanvas-body">
-        <ul className="nav nav-tabs mt-3">
+        <ul className="nav nav-tabs mt-3 ft-tabs-scroll">
           <li className="nav-item">
             <button
               className={`nav-link ${tab === 'details' ? 'active' : ''}`}
