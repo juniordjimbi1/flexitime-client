@@ -307,7 +307,12 @@ export default function EmployeeDashboard() {
                         <td>{new Date(s.start_time.replace(' ', 'T')).toLocaleTimeString()}</td>
                         <td>{s.end_time ? new Date(s.end_time.replace(' ', 'T')).toLocaleTimeString() : <span className="text.warning">en cours</span>}</td>
                         <td>{s.duration_minutes != null ? fmtMins(s.duration_minutes) : '—'}</td>
-                        <td>{s.task_id || <span className="text-muted">—</span>}</td>
+                        <td>
+  {s.task_title
+    ? s.task_title
+    : (s.task_id ? `#${s.task_id}` : <span className="text-muted">—</span>)
+  }
+</td>
                       </tr>
                     ))}
                     {!sessions.length && <tr><td colSpan="4"><EmptyState title="Aucune session aujourd’hui" /></td></tr>}
